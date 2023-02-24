@@ -1,0 +1,77 @@
+<%- include('layouts/header')%>
+ <!-- Content Wrapper -->
+ <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+<%- include('layouts/topnav')%>
+
+  <body id="page-top">
+
+            <!-- Page Wrapper -->
+            <div id="wrapper">
+<%- include('layouts/sidebar')%>
+
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+
+                    <!-- Page Heading -->
+               
+                   
+
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                 <h4 class="m-0 font-weight-bold text-primary">List Of user</h4> <br>
+                            <a  class="m-0 font-weight-bold text-primary" href="/register">Add user</a>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                        <tr>
+                                            <th>Serial No</th>
+                                            <th>First Name</th>
+                                            <th>Last Name</th>
+                                            <th>Email</th>
+                                            <th>Profile Picture</th>
+                                            <th>Delete</th>
+                                            <th>Edit</th>
+                                        </tr>
+                                    </thead>
+                          
+                                    <tbody>
+                                      <% adminData.map((data,index) =>{ %>
+                                          <tr>
+                                           
+                                            <td><%=index+1%></td>
+                                            <td><%=data.firstName%></td>
+                                            <td><%=data.lastName%></td>
+                                            <td><%=data.email%></td>
+                                            <td><img src="/uploads/<%= data.image%>" alt="" width="90px" height="80px"></td>
+                                            <td><a href="/delete/<%=data._id%>" class="btn btn-outline-danger"><i class="fa-solid fa-user-xmark"></i></a></td>
+                                            <td><a href="/edit/<%=data._id%>" class="btn btn-outline-warning"><i class="fa-sharp fa-solid fa-user-pen"></i></a></td>
+                                            
+                                         
+                                            
+                                            </tr>
+                                          <%})%>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+
+<%- include('layouts/siteFooter')%>
+<%- include('layouts/footer')%>
+
+
+           
