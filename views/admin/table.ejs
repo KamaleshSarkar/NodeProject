@@ -24,7 +24,7 @@
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
                  <h4 class="m-0 font-weight-bold text-primary">List Of user</h4> <br>
-                            <a  class="m-0 font-weight-bold text-primary" href="/register">Add user</a>
+                            <a  class="m-0 font-weight-bold text-primary" href="/addData">Add user</a>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
@@ -42,7 +42,7 @@
                                     </thead>
                           
                                     <tbody>
-                                      <% adminData.map((data,index) =>{ %>
+                                      <% userData.map((data,index) =>{ %>
                                           <tr>
                                            
                                             <td><%=index+1%></td>

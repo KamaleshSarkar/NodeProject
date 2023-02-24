@@ -49,8 +49,13 @@ router.post(
 router.get("/dashboard", adminController.userAuth, adminController.dashboard);
 router.get("/template", adminController.template);
 router.get("/logout", adminController.logout);
-router.get("/showTable", upload.single("image"), adminController.showTable);
+
 router.get("/delete/:id", adminController.delete);
 router.get("/edit/:id", adminController.edit);
+
+//<Add user.....!>
+router.get('/addData',adminController.addData)
+router.post('/saveData',upload.single("image"),adminController.saveData)
+router.get("/showTable", upload.single("image"), adminController.showTable);
 
 module.exports = router;

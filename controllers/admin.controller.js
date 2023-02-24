@@ -1,4 +1,5 @@
 const adminModel = require("../models/admin.model");
+const userDataModel=require('../models/userData.model')
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 class AdminController {
@@ -179,27 +180,14 @@ class AdminController {
     try {
       res.render("admin/table", {
         title: "Admin || Register",
-      });
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  /**
-   * @Method:Show-Table
-   */
-  async showTable(req, res) {
-    try {
-      let adminData = await adminModel.find({});
-      res.render("admin/table", {
-        title: "Admin||Data",
-        adminData,
         user: req.user,
       });
     } catch (err) {
       throw err;
     }
   }
+
+
 
 
   /**
@@ -236,6 +224,83 @@ class AdminController {
             throw err;
           }
         }
+
+
+
+
+//< For Data Save......!>
+
+
+        /**
+         * @Method: To Add Data
+         */
+
+        async addData(req, res) {
+          try {
+            res.render("admin/addData", {
+              title: "Admin || DataAdd",
+            });
+          } catch (err) {
+            throw err;
+          }
+        }
+  /**
+   * @Method: User Data Save
+   * @Description: To Save User data
+   */
+
+  async saveData(req, res) {
+    try {
+      console.log(req.file);
+      req.body.image = req.file.filename;
+
+      let isEmailExist = await userDataModel.findOne({ email: req.body.email });
+      if (!isEmailExist) {
+        if (req.body.password === req.body.confirmPassword) {
+          req.body.password = bcrypt.hashSync(
+            req.body.password,
+            bcrypt.genSaltSync(10)
+          );
+          let saveData = await userDataModel.create(req.body);
+          if (saveData && saveData._id) {
+            console.log(saveData);
+            console.log("Data Added....");
+            res.redirect("/showTable");
+          } else {
+            console.log("Data not Added....");
+            res.redirect("/dashboard");
+          }
+        } else {
+          console.log("Password and confirm password does not match");
+          
+        }
+      } else {
+        console.log("Email already exists");
+        res.redirect("/register");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+
+    /**
+   * @Method:Show User Data Table
+   */
+    async showTable(req, res) {
+      try {
+        let userData = await userDataModel.find({});
+        res.render("admin/table", {
+          title: "Admin|| UserData",
+          userData,
+          user: req.user,
+        });
+      } catch (err) {
+        throw err;
+      }
+    }
+
 }
+
 
 module.exports = new AdminController();
