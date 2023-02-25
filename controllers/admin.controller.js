@@ -139,7 +139,7 @@ class AdminController {
               image: isUserExists.image,
             },
             "ME3DS8TY2N",
-            { expiresIn: "5m" }
+            { expiresIn: "20m" }
           );
           console.log("Logged In..");
 
