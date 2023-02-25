@@ -74,6 +74,7 @@ router.get("/delete-Question/:id", adminController.deleteQuestion);
 router.get('/showBlog',adminController.showBlog)
 router.get('/blogAdd',adminController.blogAdd)
 router.post('/save-Blog-Content',upload.single("image"),adminController.saveBlogContent)
+router.get('/deleteBlog/:id',adminController.deleteBlog)
 
 
 

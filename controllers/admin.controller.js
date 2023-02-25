@@ -79,13 +79,13 @@ class AdminController {
   }
 
   /**
-   * @Method: Get-Register
-   * @Description: To Save Registration Data
+   * @method: Get-Register
+   * @description: To Save Registration Data
    */
 
   async getRegister(req, res) {
     try {
-      console.log(req.file);
+      // console.log(req.file);
       req.body.image = req.file.filename;
 
       let isEmailExist = await adminModel.findOne({ email: req.body.email });
@@ -97,7 +97,7 @@ class AdminController {
           );
           let saveData = await adminModel.create(req.body);
           if (saveData && saveData._id) {
-            console.log(saveData);
+            // console.log(saveData);
             console.log("Register...");
             res.redirect("/");
           } else {
@@ -431,7 +431,7 @@ class AdminController {
 
   /**
    * @method: Save blog
-   * @description: To Save blog Content
+   * @description: To Create blog Content
    */
 
   async saveBlogContent(req, res) {
@@ -439,10 +439,27 @@ class AdminController {
       req.body.image = req.file.filename;
       let saveContent = await blogModel.create(req.body);
       if (saveContent && saveContent._id) {
+        console.log(saveContent);
         console.log("Content Created...!");
         res.redirect("/showBlog");
       } else {
         console.log("Content not Created...!");
+        res.redirect("/showBlog");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * @method:Delete Content
+   */
+
+  async deleteBlog(req, res) {
+    try {
+      let deleteData = await blogModel.findByIdAndRemove(req.params.id);
+      if (deleteData) {
+        console.log("Content Delete Sucessfully");
         res.redirect("/showBlog");
       }
     } catch (err) {
