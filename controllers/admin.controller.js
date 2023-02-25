@@ -1,5 +1,7 @@
 const adminModel = require("../models/admin.model");
-const userDataModel=require('../models/userData.model')
+const userDataModel = require("../models/userData.model");
+const faqModel = require("../models/faq.model");
+const blogModel = require("../models/blog.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 class AdminController {
@@ -187,66 +189,24 @@ class AdminController {
     }
   }
 
-
-
+  //< For Data Save......!>
 
   /**
-   * @Method: To Delete Data
+   * Method:Add Data
    */
 
-  async delete(req,res){
-            try {
-                let deleteData=await adminModel.findByIdAndRemove(req.params.id)
-                if(deleteData){
-                    console.log('Data Delete Sucessfully')
-                    res.redirect('/dashboard');
-                }
-            } catch (err) {
-                throw err
-            }
-        }
-
-
-        /**
-         * @Method: To Edit Data
-         */
-
-
-        async edit(req, res) {
-          try {
-            let adminData = await adminModel.find({ _id: req.params.id });
-            
-            res.render("admin/edit", {
-              title: "Admin || Edit",
-              response: adminData[0],
-            });
-          } catch (err) {
-            throw err;
-          }
-        }
-
-
-
-
-//< For Data Save......!>
-
-
-        /**
-         * @Method: To Add Data
-         */
-
-        async addData(req, res) {
-          try {
-            res.render("admin/addData", {
-              title: "Admin || DataAdd",
-            });
-          } catch (err) {
-            throw err;
-          }
-        }
+  async addData(req, res) {
+    try {
+      res.render("admin/addData", {
+        title: "Admin || DataAdd",
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
   /**
-   * @Method: User Data Save
-   * @Description: To Save User data
+   * @method: SaveData
+   * @description: To Save User data
    */
 
   async saveData(req, res) {
@@ -272,35 +232,223 @@ class AdminController {
           }
         } else {
           console.log("Password and confirm password does not match");
-          
         }
       } else {
         console.log("Email already exists");
-        res.redirect("/register");
       }
     } catch (error) {
       throw error;
     }
   }
 
-
-    /**
-   * @Method:Show User Data Table
+  /**
+   * @method:ShowTable
+   * @description:To Show User Data Table
    */
-    async showTable(req, res) {
-      try {
-        let userData = await userDataModel.find({});
-        res.render("admin/table", {
-          title: "Admin|| UserData",
-          userData,
-          user: req.user,
-        });
-      } catch (err) {
-        throw err;
-      }
+  async showTable(req, res) {
+    try {
+      let userData = await userDataModel.find({});
+      res.render("admin/table", {
+        title: "Admin|| UserData",
+        userData,
+        user: req.user,
+      });
+    } catch (err) {
+      throw err;
     }
+  }
 
+  /**
+   * @method:  Delete
+   * @description:To Delete User Data
+   */
+
+  async delete(req, res) {
+    try {
+      let deleteData = await userDataModel.findByIdAndRemove(req.params.id);
+      if (deleteData) {
+        console.log("Data Delete Sucessfully");
+        res.redirect("/showTable");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * @method:dataUpdate
+   * @description: To Update user data
+   */
+
+  async edit(req, res) {
+    try {
+      let adminData = await userDataModel.find({ _id: req.params.id });
+
+      res.render("admin/dataUpdate", {
+        title: "Admin || UserEdit",
+        response: adminData[0],
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * Description:to show Update data
+   */
+  async updateData(req, res) {
+    try {
+      req.body.image = req.file.filename;
+      let isEmailExsist = await userDataModel.find({
+        email: req.body.email,
+        _id: { $ne: req.body.id },
+      });
+      if (!isEmailExsist.length) {
+        if (req.file) {
+          let userUpdate = await userDataModel.findByIdAndUpdate(
+            req.body.id,
+            req.body
+          );
+          if (userUpdate && userUpdate._id) {
+            console.log("Data Updated..!");
+            res.redirect("/showTable");
+          } else {
+            console.log("Data Not Updated...!");
+          }
+        }
+      } else {
+        console.log("Email is Already Exsist");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //<FAQ Part.....!>
+
+  /**
+   * @method:ShowFAQ
+   * @description: To Render FAQ Table
+   */
+
+  async showFAQ(req, res) {
+    try {
+      let userQuestion = await faqModel.find({});
+      res.render("admin/showFaq", {
+        title: "Admin|| Show Question",
+        userQuestion,
+        user: req.user,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * @method:Question FAQ
+   * @description: To Render FAQ Question Page
+   */
+
+  async questionFAQ(req, res) {
+    try {
+      res.render("admin/question", {
+        title: "Admin || ShowFAQ-Table",
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * @method:Sava-Question
+   * @description: To save Question-Answer
+   */
+  async saveQuestion(req, res) {
+    try {
+      let saveQuestion = await faqModel.create(req.body);
+      if (saveQuestion && saveQuestion._id) {
+        console.log("Question Added...!");
+        res.redirect("/showFAQ");
+      } else {
+        console.log("Question not Added...!");
+        res.redirect("/showFAQ");
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  /**
+   * @method: Question Delete
+   */
+
+  async deleteQuestion(req, res) {
+    try {
+      let deleteData = await faqModel.findByIdAndRemove(req.params.id);
+      if (deleteData) {
+        console.log("Question Delete Sucessfully");
+        res.redirect("/showFAQ");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  //< Blog Parts.....!>
+
+  /**
+   * @method: Show Blog
+   * @description: To render Blog Table
+   */
+
+  async showBlog(req, res) {
+    try {
+      let isblogContent = await blogModel.find({});
+      res.render("admin/blogTable", {
+        title: "Admin|| Show Blog Table",
+        isblogContent,
+        user: req.user,
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * @method:Blog Add
+   * @description: To render Add blog page
+   */
+
+  async blogAdd(req, res) {
+    try {
+      res.render("admin/blogAdd", {
+        title: "Admin || Add-Blog",
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * @method: Save blog
+   * @description: To Save blog Content
+   */
+
+  async saveBlogContent(req, res) {
+    try {
+      req.body.image = req.file.filename;
+      let saveContent = await blogModel.create(req.body);
+      if (saveContent && saveContent._id) {
+        console.log("Content Created...!");
+        res.redirect("/showBlog");
+      } else {
+        console.log("Content not Created...!");
+        res.redirect("/showBlog");
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
 }
-
 
 module.exports = new AdminController();
