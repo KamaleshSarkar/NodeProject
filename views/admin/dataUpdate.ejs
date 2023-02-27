@@ -48,16 +48,22 @@
                             placeholder="Email Address">
                     </div>
                     <div class="form-group">
-                        <input type="file" class="form-control form-control-user" name="image" id="exampleInputImage"
+                        <input type="file" class="form-control form-control-user"
+                        value="<%= response.image%>"
+                        name="image" id="exampleInputImage"
                             placeholder="Profile Picture">
                     </div>
                     <div class="form-group row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
-                            <input type="password" class="form-control form-control-user" name="password"
+                            <input type="password" class="form-control form-control-user"
+                            value="<%= response.password%>"
+                            name="password"
                                 id="exampleInputPassword" placeholder="Password">
                         </div>
                         <div class="col-sm-6">
-                            <input type="password" class="form-control form-control-user" name="confirmPassword"
+                            <input type="password" class="form-control form-control-user" 
+                            value="<%= response.confirmPassword%>"
+                            name="confirmPassword"
                                 id="exampleRepeatPassword" placeholder="Repeat Password">
                         </div>
                     </div>

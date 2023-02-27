@@ -2,7 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const path = require("path");
-const cookieParser = require('cookie-parser')
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 app.set("view engine", "ejs");
 app.set("views", "views");
@@ -14,20 +16,27 @@ app.use(
   })
 );
 
-app.use(cookieParser())
-app.set('view engine', 'ejs')
-app.set('views','views')
+app.use(cookieParser());
+app.use(
+  session({
+    secret: 'B1A2$P3',
+    saveUninitialized: true,
+    resave: true,
+  })
+);
+app.use(flash());
 
+app.set("view engine", "ejs");
+app.set("views", "views");
 
-const jwtAuth = require('./middleware/adminJwt')
-app.use(jwtAuth.authJwt)
+const jwtAuth = require("./middleware/adminJwt");
+app.use(jwtAuth.authJwt);
 
 const adminRouter = require("./routes/admin.routes");
 app.use(adminRouter);
 
 const dbDriver =
-
-"mongodb+srv://Kamalesh9832:Kamal1995@cluster0.r2lbcdv.mongodb.net/AdminREG"
+  "mongodb+srv://Kamalesh9832:Kamal1995@cluster0.r2lbcdv.mongodb.net/AdminREG";
 
 const port = process.env.PORT || 2025;
 

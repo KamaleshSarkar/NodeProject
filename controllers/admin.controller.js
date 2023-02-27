@@ -70,9 +70,7 @@ class AdminController {
    */
   async register(req, res) {
     try {
-      res.render("admin/register", {
-        title: "Admin || Register",
-      });
+      res.render("admin/register", { title: "Admin || Register" });
     } catch (err) {
       throw err;
     }
@@ -98,7 +96,8 @@ class AdminController {
           let saveData = await adminModel.create(req.body);
           if (saveData && saveData._id) {
             // console.log(saveData);
-            console.log("Register...");
+            // req.flash("message", "Registration Sucessfully");
+            console.log("Register....!");
             res.redirect("/");
           } else {
             console.log("Not registered");
@@ -189,7 +188,7 @@ class AdminController {
     }
   }
 
-  //< For Data Save......!>
+  //< For User Data Save......!>
 
   /**
    * Method:Add Data
