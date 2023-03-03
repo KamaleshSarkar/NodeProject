@@ -29,6 +29,8 @@ class AdminController {
     try {
       res.render("admin/index", {
         title: "Admin || Login",
+        message:req.flash('message')
+
       });
     } catch (err) {
       throw err;
@@ -44,6 +46,7 @@ class AdminController {
       console.log(req.user);
       res.render("admin/dashboard", {
         title: "Admin || Dashboard",
+        message:req.flash('message'),
         user: req.user,
       });
     } catch (err) {
@@ -70,7 +73,8 @@ class AdminController {
    */
   async register(req, res) {
     try {
-      res.render("admin/register", { title: "Admin || Register" });
+      res.render("admin/register",
+       { title: "Admin || Register" });
     } catch (err) {
       throw err;
     }
@@ -93,15 +97,15 @@ class AdminController {
             req.body.password,
             bcrypt.genSaltSync(10)
           );
+          req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
           let saveData = await adminModel.create(req.body);
           if (saveData && saveData._id) {
-            // console.log(saveData);
-            // req.flash("message", "Registration Sucessfully");
-            console.log("Register....!");
+            console.log(saveData);
+            req.flash("message", "Registration Sucessfully");
             res.redirect("/");
           } else {
-            console.log("Not registered");
-            res.redirect("/register");
+            req.flash("message", "Registration not Sucessfully");
+            res.redirect("/");
           }
         } else {
           console.log("Password and confirm password does not match");
@@ -140,7 +144,7 @@ class AdminController {
             "ME3DS8TY2N",
             { expiresIn: "20m" }
           );
-          console.log("Logged In..");
+         req.flash('message','Welcome' +' '+ isUserExists.fullName)
 
           //set your cookie
 
@@ -212,6 +216,7 @@ class AdminController {
     try {
       console.log(req.file);
       req.body.image = req.file.filename;
+      req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
 
       let isEmailExist = await userDataModel.findOne({ email: req.body.email });
       if (!isEmailExist) {
@@ -223,7 +228,7 @@ class AdminController {
           let saveData = await userDataModel.create(req.body);
           if (saveData && saveData._id) {
             console.log(saveData);
-            console.log("Data Added....");
+            req.flash("message", "User Data added Sucessfully");
             res.redirect("/showTable");
           } else {
             console.log("Data not Added....");
@@ -250,6 +255,7 @@ class AdminController {
       res.render("admin/table", {
         title: "Admin|| UserData",
         userData,
+        message:req.flash('message'),
         user: req.user,
       });
     } catch (err) {
@@ -283,7 +289,7 @@ class AdminController {
     try {
       let adminData = await userDataModel.find({ _id: req.params.id });
 
-      res.render("admin/dataUpdate", {
+      res.render("admin/editUser", {
         title: "Admin || UserEdit",
         response: adminData[0],
       });
@@ -297,27 +303,22 @@ class AdminController {
    */
   async updateData(req, res) {
     try {
-      req.body.image = req.file.filename;
-      let isEmailExsist = await userDataModel.find({
-        email: req.body.email,
-        _id: { $ne: req.body.id },
-      });
-      if (!isEmailExsist.length) {
-        if (req.file) {
-          let userUpdate = await userDataModel.findByIdAndUpdate(
-            req.body.id,
-            req.body
-          );
-          if (userUpdate && userUpdate._id) {
-            console.log("Data Updated..!");
-            res.redirect("/showTable");
-          } else {
-            console.log("Data Not Updated...!");
-          }
-        }
-      } else {
-        console.log("Email is Already Exsist");
-      }
+    let isEmailExist=await userDataModel.find({email:req.body.email, _id:{$ne:req.body.id}})
+    // console.log(isEmailExist);
+    if(!isEmailExist.length){
+      req.body.fullName = `${req.body.firstName} ${req.body.lastName}`
+      let userData=await userDataModel.findByIdAndUpdate(req.body.id, req.body)
+if(!userData.length){
+  console.log('Data Updated...');
+  res.redirect('/showTable')
+}else{
+  console.log('Data Not Updated...');
+  res.redirect('/showTable')
+}
+    }else{
+      console.log('Email Is already Exsit');
+      res.redirect('/showTable')
+    }
     } catch (err) {
       throw err;
     }

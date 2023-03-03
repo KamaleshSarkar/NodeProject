@@ -17,8 +17,7 @@ app.use(
 );
 
 app.use(cookieParser());
-app.use(
-  session({
+app.use(session({
     secret: 'B1A2$P3',
     saveUninitialized: true,
     resave: true,
