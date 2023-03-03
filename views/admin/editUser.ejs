@@ -26,7 +26,7 @@
                     <h1 class="h4 text-gray-900 mb-4">Hello User.!</h1>
                     <h6>Update Your Data</h6>
                 </div>
-                <form class="user" action="/updateData" method="post" enctype="multipart/form-data">
+                <form class="user" action="/updateData" method="post">
                     <div class="form-group row">
                         <div class="col-sm-6 mb-3 mb-sm-0">
                             <input type="text" class="form-control form-control-user"
@@ -60,12 +60,9 @@
                             name="image" id="exampleInputImage"
                             placeholder="Profile Picture">
                     </div>
-                   
-                        
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-user btn-block">
-                       Update
-                    </button>
+                  <input type="hidden" name="id" value="<%= response._id%>" />
+               <button type="submit" class="btn btn-primary btn-lg btn-block">
+                Update  </button>
                     <hr>
                     
                 </form>

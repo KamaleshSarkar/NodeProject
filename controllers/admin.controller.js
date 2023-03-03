@@ -1,9 +1,9 @@
-const adminModel = require("../models/admin.model");
-const userDataModel = require("../models/userData.model");
-const faqModel = require("../models/faq.model");
-const blogModel = require("../models/blog.model");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const adminModel = require('../models/admin.model')
+const userDataModel = require('../models/userData.model')
+const faqModel = require('../models/faq.model')
+const blogModel = require('../models/blog.model')
+const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
 class AdminController {
   /**
    * @Method userAuth
@@ -12,12 +12,12 @@ class AdminController {
   async userAuth(req, res, next) {
     try {
       if (req.user) {
-        next();
+        next()
       } else {
-        res.redirect("/");
+        res.redirect('/')
       }
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -27,12 +27,12 @@ class AdminController {
    */
   async logIn(req, res) {
     try {
-      res.render("admin/index", {
-        title: "Admin || Login",
-        message: req.flash("message"),
-      });
+      res.render('admin/index', {
+        title: 'Admin || Login',
+        message: req.flash('message'),
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -42,14 +42,14 @@ class AdminController {
    */
   async dashboard(req, res) {
     try {
-      console.log(req.user);
-      res.render("admin/dashboard", {
-        title: "Admin || Dashboard",
-        message: req.flash("message"),
+      console.log(req.user)
+      res.render('admin/dashboard', {
+        title: 'Admin || Dashboard',
+        message: req.flash('message'),
         user: req.user,
-      });
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -59,11 +59,11 @@ class AdminController {
    */
   async template(req, res) {
     try {
-      res.render("admin/template", {
-        title: "Admin || Template",
-      });
+      res.render('admin/template', {
+        title: 'Admin || Template',
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
   /**
@@ -72,9 +72,9 @@ class AdminController {
    */
   async register(req, res) {
     try {
-      res.render("admin/register", { title: "Admin || Register" });
+      res.render('admin/register', { title: 'Admin || Register' })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -86,35 +86,35 @@ class AdminController {
   async getRegister(req, res) {
     try {
       // console.log(req.file);
-      req.body.image = req.file.filename;
+      req.body.image = req.file.filename
 
-      let isEmailExist = await adminModel.findOne({ email: req.body.email });
+      let isEmailExist = await adminModel.findOne({ email: req.body.email })
       if (!isEmailExist) {
         if (req.body.password === req.body.confirmPassword) {
           req.body.password = bcrypt.hashSync(
             req.body.password,
             bcrypt.genSaltSync(10)
-          );
-          req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
-          let saveData = await adminModel.create(req.body);
+          )
+          req.body.fullName = `${req.body.firstName} ${req.body.lastName}`
+          let saveData = await adminModel.create(req.body)
           if (saveData && saveData._id) {
-            console.log(saveData);
-            req.flash("message", "Registration Sucessfully");
-            res.redirect("/");
+            console.log(saveData)
+            req.flash('message', 'Registration Sucessfully')
+            res.redirect('/')
           } else {
-            req.flash("message", "Registration not Sucessfully");
-            res.redirect("/");
+            req.flash('message', 'Registration not Sucessfully')
+            res.redirect('/')
           }
         } else {
-          console.log("Password and confirm password does not match");
-          res.redirect("/register");
+          console.log('Password and confirm password does not match')
+          res.redirect('/register')
         }
       } else {
-        console.log("Email already exists");
-        res.redirect("/register");
+        console.log('Email already exists')
+        res.redirect('/register')
       }
     } catch (error) {
-      throw error;
+      throw error
     }
   }
   /**
@@ -126,9 +126,9 @@ class AdminController {
     try {
       let isUserExists = await adminModel.findOne({
         email: req.body.email,
-      });
+      })
       if (isUserExists) {
-        const hashPassword = isUserExists.password;
+        const hashPassword = isUserExists.password
         if (bcrypt.compareSync(req.body.password, hashPassword)) {
           //token creation
 
@@ -139,23 +139,23 @@ class AdminController {
               name: `${isUserExists.firstName} ${isUserExists.lastName}`,
               image: isUserExists.image,
             },
-            "ME3DS8TY2N",
-            { expiresIn: "20m" }
-          );
-          req.flash("message", "Welcome" + " " + isUserExists.fullName);
+            'ME3DS8TY2N',
+            { expiresIn: '20m' }
+          )
+          req.flash('message', 'Welcome' + ' ' + isUserExists.fullName)
 
           //set your cookie
 
-          res.cookie("userToken", token);
-          res.redirect("/dashboard");
+          res.cookie('userToken', token)
+          res.redirect('/dashboard')
         } else {
-          console.log("Wrong Password..");
+          console.log('Wrong Password..')
         }
       } else {
-        console.log("Email Does not exists");
+        console.log('Email Does not exists')
       }
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -166,12 +166,12 @@ class AdminController {
 
   async logout(req, res) {
     try {
-      console.log(req.cookies);
-      res.clearCookie("userToken");
-      console.log("Cookie Cleared!");
-      res.redirect("/");
+      console.log(req.cookies)
+      res.clearCookie('userToken')
+      console.log('Cookie Cleared!')
+      res.redirect('/')
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -181,13 +181,13 @@ class AdminController {
    */
   async table(req, res) {
     try {
-      res.render("admin/table", {
-        title: "Admin || Register",
-        message: req.flash("message"),
+      res.render('admin/table', {
+        title: 'Admin || Register',
+        message: req.flash('message'),
         user: req.user,
-      });
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -199,11 +199,11 @@ class AdminController {
 
   async addData(req, res) {
     try {
-      res.render("admin/addData", {
-        title: "Admin || DataAdd",
-      });
+      res.render('admin/addData', {
+        title: 'Admin || DataAdd',
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
   /**
@@ -213,34 +213,34 @@ class AdminController {
 
   async saveData(req, res) {
     try {
-      console.log(req.file);
-      req.body.image = req.file.filename;
-      req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
+      console.log(req.file)
+      req.body.image = req.file.filename
+      req.body.fullName = `${req.body.firstName} ${req.body.lastName}`
 
-      let isEmailExist = await userDataModel.findOne({ email: req.body.email });
+      let isEmailExist = await userDataModel.findOne({ email: req.body.email })
       if (!isEmailExist) {
         if (req.body.password === req.body.confirmPassword) {
           req.body.password = bcrypt.hashSync(
             req.body.password,
             bcrypt.genSaltSync(10)
-          );
-          let saveData = await userDataModel.create(req.body);
+          )
+          let saveData = await userDataModel.create(req.body)
           if (saveData && saveData._id) {
-            console.log(saveData);
-            req.flash("message", "User Data added Sucessfully");
-            res.redirect("/showTable");
+            console.log(saveData)
+            req.flash('message', 'User Data added Sucessfully')
+            res.redirect('/showTable')
           } else {
-            console.log("Data not Added....");
-            res.redirect("/dashboard");
+            console.log('Data not Added....')
+            res.redirect('/dashboard')
           }
         } else {
-          console.log("Password and confirm password does not match");
+          console.log('Password and confirm password does not match')
         }
       } else {
-        console.log("Email already exists");
+        console.log('Email already exists')
       }
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -250,15 +250,15 @@ class AdminController {
    */
   async showTable(req, res) {
     try {
-      let userData = await userDataModel.find({});
-      res.render("admin/table", {
-        title: "Admin|| UserData",
+      let userData = await userDataModel.find({})
+      res.render('admin/table', {
+        title: 'Admin|| UserData',
         userData,
-        message: req.flash("message"),
+        message: req.flash('message'),
         user: req.user,
-      });
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -269,13 +269,13 @@ class AdminController {
 
   async delete(req, res) {
     try {
-      let deleteData = await userDataModel.findByIdAndRemove(req.params.id);
+      let deleteData = await userDataModel.findByIdAndRemove(req.params.id)
       if (deleteData) {
-        console.log("Data Delete Sucessfully");
-        res.redirect("/showTable");
+        console.log('Data Delete Sucessfully')
+        res.redirect('/showTable')
       }
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -286,14 +286,14 @@ class AdminController {
 
   async edit(req, res) {
     try {
-      let adminData = await userDataModel.find({ _id: req.params.id });
+      let adminData = await userDataModel.find({ _id: req.params.id })
 
-      res.render("admin/editUser", {
-        title: "Admin || UserEdit",
+      res.render('admin/editUser', {
+        title: 'Admin || UserEdit',
         response: adminData[0],
-      });
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -302,34 +302,31 @@ class AdminController {
    */
   async updateData(req, res) {
     try {
-      
-let data=await userDataModel.find({_id:req.body.id})
-console.log(data);
+      let data = await userDataModel.find({ _id: req.body.id })
+      console.log(data)
       let isEmailExist = await userDataModel.findOne({
         email: req.body.email,
-         _id: { $ne: req.body.id },
-      });
-      // console.log(isEmailExist);
+        _id: { $ne: req.body.id },
+      })
       if (!isEmailExist) {
-        req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
+        req.body.fullName = `${req.body.firstName} ${req.body.lastName}`
         let userData = await userDataModel.findByIdAndUpdate(
           req.body.id,
           req.body
-        );
-        console.log(userData);
+        )
         if (userData && userData._id) {
-          console.log("Data Updated...");
-          res.redirect("/showTable");
+          console.log('Details are updated')
+          res.redirect('/showTable')
         } else {
-          console.log("Data Not Updated...");
-          res.redirect("/showTable");
+          console.log('Details are not updated')
+          res.redirect('/showTable')
         }
       } else {
-        console.log("Email Is already Exsit");
-        res.redirect("/showTable");
+        console.log('Email id already exists')
+        res.redirect('/showTable')
       }
-    } catch (err) {
-      throw err;
+    } catch (error) {
+      throw error
     }
   }
 
@@ -342,14 +339,14 @@ console.log(data);
 
   async showFAQ(req, res) {
     try {
-      let userQuestion = await faqModel.find({});
-      res.render("admin/showFaq", {
-        title: "Admin|| Show Question",
+      let userQuestion = await faqModel.find({})
+      res.render('admin/showFaq', {
+        title: 'Admin|| Show Question',
         userQuestion,
         user: req.user,
-      });
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -360,11 +357,11 @@ console.log(data);
 
   async questionFAQ(req, res) {
     try {
-      res.render("admin/question", {
-        title: "Admin || ShowFAQ-Table",
-      });
+      res.render('admin/question', {
+        title: 'Admin || ShowFAQ-Table',
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -374,16 +371,16 @@ console.log(data);
    */
   async saveQuestion(req, res) {
     try {
-      let saveQuestion = await faqModel.create(req.body);
+      let saveQuestion = await faqModel.create(req.body)
       if (saveQuestion && saveQuestion._id) {
-        console.log("Question Added...!");
-        res.redirect("/showFAQ");
+        console.log('Question Added...!')
+        res.redirect('/showFAQ')
       } else {
-        console.log("Question not Added...!");
-        res.redirect("/showFAQ");
+        console.log('Question not Added...!')
+        res.redirect('/showFAQ')
       }
     } catch (error) {
-      throw error;
+      throw error
     }
   }
 
@@ -393,13 +390,13 @@ console.log(data);
 
   async deleteQuestion(req, res) {
     try {
-      let deleteData = await faqModel.findByIdAndRemove(req.params.id);
+      let deleteData = await faqModel.findByIdAndRemove(req.params.id)
       if (deleteData) {
-        console.log("Question Delete Sucessfully");
-        res.redirect("/showFAQ");
+        console.log('Question Delete Sucessfully')
+        res.redirect('/showFAQ')
       }
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -412,14 +409,14 @@ console.log(data);
 
   async showBlog(req, res) {
     try {
-      let isblogContent = await blogModel.find({});
-      res.render("admin/blogTable", {
-        title: "Admin|| Show Blog Table",
+      let isblogContent = await blogModel.find({})
+      res.render('admin/blogTable', {
+        title: 'Admin|| Show Blog Table',
         isblogContent,
         user: req.user,
-      });
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -430,11 +427,11 @@ console.log(data);
 
   async blogAdd(req, res) {
     try {
-      res.render("admin/blogAdd", {
-        title: "Admin || Add-Blog",
-      });
+      res.render('admin/blogAdd', {
+        title: 'Admin || Add-Blog',
+      })
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -445,18 +442,18 @@ console.log(data);
 
   async saveBlogContent(req, res) {
     try {
-      req.body.image = req.file.filename;
-      let saveContent = await blogModel.create(req.body);
+      req.body.image = req.file.filename
+      let saveContent = await blogModel.create(req.body)
       if (saveContent && saveContent._id) {
-        console.log(saveContent);
-        console.log("Content Created...!");
-        res.redirect("/showBlog");
+        console.log(saveContent)
+        console.log('Content Created...!')
+        res.redirect('/showBlog')
       } else {
-        console.log("Content not Created...!");
-        res.redirect("/showBlog");
+        console.log('Content not Created...!')
+        res.redirect('/showBlog')
       }
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 
@@ -466,15 +463,15 @@ console.log(data);
 
   async deleteBlog(req, res) {
     try {
-      let deleteData = await blogModel.findByIdAndRemove(req.params.id);
+      let deleteData = await blogModel.findByIdAndRemove(req.params.id)
       if (deleteData) {
-        console.log("Content Delete Sucessfully");
-        res.redirect("/showBlog");
+        console.log('Content Delete Sucessfully')
+        res.redirect('/showBlog')
       }
     } catch (err) {
-      throw err;
+      throw err
     }
   }
 }
 
-module.exports = new AdminController();
+module.exports = new AdminController()
