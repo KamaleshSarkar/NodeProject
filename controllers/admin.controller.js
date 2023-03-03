@@ -29,8 +29,7 @@ class AdminController {
     try {
       res.render("admin/index", {
         title: "Admin || Login",
-        message:req.flash('message')
-
+        message: req.flash("message"),
       });
     } catch (err) {
       throw err;
@@ -46,7 +45,7 @@ class AdminController {
       console.log(req.user);
       res.render("admin/dashboard", {
         title: "Admin || Dashboard",
-        message:req.flash('message'),
+        message: req.flash("message"),
         user: req.user,
       });
     } catch (err) {
@@ -73,8 +72,7 @@ class AdminController {
    */
   async register(req, res) {
     try {
-      res.render("admin/register",
-       { title: "Admin || Register" });
+      res.render("admin/register", { title: "Admin || Register" });
     } catch (err) {
       throw err;
     }
@@ -144,7 +142,7 @@ class AdminController {
             "ME3DS8TY2N",
             { expiresIn: "20m" }
           );
-         req.flash('message','Welcome' +' '+ isUserExists.fullName)
+          req.flash("message", "Welcome" + " " + isUserExists.fullName);
 
           //set your cookie
 
@@ -185,6 +183,7 @@ class AdminController {
     try {
       res.render("admin/table", {
         title: "Admin || Register",
+        message: req.flash("message"),
         user: req.user,
       });
     } catch (err) {
@@ -255,7 +254,7 @@ class AdminController {
       res.render("admin/table", {
         title: "Admin|| UserData",
         userData,
-        message:req.flash('message'),
+        message: req.flash("message"),
         user: req.user,
       });
     } catch (err) {
@@ -303,22 +302,32 @@ class AdminController {
    */
   async updateData(req, res) {
     try {
-    let isEmailExist=await userDataModel.find({email:req.body.email, _id:{$ne:req.body.id}})
-    // console.log(isEmailExist);
-    if(!isEmailExist.length){
-      req.body.fullName = `${req.body.firstName} ${req.body.lastName}`
-      let userData=await userDataModel.findByIdAndUpdate(req.body.id, req.body)
-if(!userData.length){
-  console.log('Data Updated...');
-  res.redirect('/showTable')
-}else{
-  console.log('Data Not Updated...');
-  res.redirect('/showTable')
-}
-    }else{
-      console.log('Email Is already Exsit');
-      res.redirect('/showTable')
-    }
+      
+let data=await userDataModel.find({_id:req.body.id})
+console.log(data);
+      let isEmailExist = await userDataModel.findOne({
+        email: req.body.email,
+         _id: { $ne: req.body.id },
+      });
+      // console.log(isEmailExist);
+      if (!isEmailExist) {
+        req.body.fullName = `${req.body.firstName} ${req.body.lastName}`;
+        let userData = await userDataModel.findByIdAndUpdate(
+          req.body.id,
+          req.body
+        );
+        console.log(userData);
+        if (userData && userData._id) {
+          console.log("Data Updated...");
+          res.redirect("/showTable");
+        } else {
+          console.log("Data Not Updated...");
+          res.redirect("/showTable");
+        }
+      } else {
+        console.log("Email Is already Exsit");
+        res.redirect("/showTable");
+      }
     } catch (err) {
       throw err;
     }

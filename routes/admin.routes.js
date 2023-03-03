@@ -57,7 +57,7 @@ router.get("/logout", adminController.logout);
 router.get('/addData',adminController.addData)
 router.post('/saveData',upload.single("image"),adminController.saveData)
 router.get("/showTable", upload.single("image"), adminController.showTable);
-router.post("/updateData", upload.single("image"), adminController.updateData);
+router.post("/updateData", adminController.updateData);
 router.get("/delete/:id", adminController.delete);
 router.get("/edit/:id", adminController.edit);
 
